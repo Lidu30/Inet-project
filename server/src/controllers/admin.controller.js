@@ -97,7 +97,9 @@ publicRouter.post('/logout', (req, res) => {
   });
 });
 
-// Check authentication status
+
+// check why I repeated this
+// Check authentication status 
 publicRouter.get('/auth/status', (req, res) => {
   const { id } = req.session;
   const username = model.findAssistantById(id);

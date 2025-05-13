@@ -60,6 +60,8 @@ publicRouter.post('/timeslots/:id/reserve', async (req, res) => {
     // Mark as reserved in the model (not in DB yet)
     const reserved = model.reserveTimeslot(id);
     
+
+    // remove this one and check what happens  
     if (!reserved) {
         return res.status(403).json({ error: 'Timeslot is already reserved or booked' });
     }
@@ -136,7 +138,7 @@ publicRouter.post('/timeslots/:id/cancel', async (req, res) => {
     
 });
 
-// Not sure about this, but assistants should have Private routes when they try to book?
+// Not sure about this, but assistants should have Private routes when they add a new timeslot.
 privateRouter.post('/timeslots', requireAuth, async (req, res) => {
     const { time } = req.body;
     const { id } = req.session;
