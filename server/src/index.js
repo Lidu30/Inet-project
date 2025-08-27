@@ -34,7 +34,7 @@ app.use(
     header: { show: false },
     path: { show: true },
     body: { show: true },
-  })
+  }),
 );
 
 // Configure session management
@@ -49,7 +49,7 @@ io.use(
   socketIOSession(sessionConf, {
     autoSave: true,
     saveUninitialized: true,
-  })
+  }),
 );
 
 // Serve static files
@@ -68,16 +68,17 @@ const { requireAuth } = admin;
 app.use("/api", requireAuth, admin.privateRouter);
 app.use("/api", requireAuth, timeslot.privateRouter);
 
-app.get('*', (req, res) => {
-  res.sendFile(resolvePath('client', 'dist', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(resolvePath("client", "dist", "index.html"));
 });
 
 // Initialize a model
 model.init(io);
-model.createRoom("c++");
+/*model.createRoom("c++");
 model.createRoom("java");
 model.createRoom("js");
 model.createRoom("python");
+*/
 
 // Handle socket.io connections
 io.on("connection", (socket) => {

@@ -1,17 +1,17 @@
 import Assistant from "./models/assistant.model.js";
 import TimeSlot from "./models/timeslot.model.js";
-import Room from "./models/room.model.js";
-import User from "./models/user.model.js";
+//import Room from "./models/room.model.js";
+// import User from "./models/user.model.js";
 import db from "./db.js";
 
 class Model {
   constructor() {
     this.assistants = {};
     this.timeslots = {};
-    this.rooms = {};
-    this.users = {};
+    // this.rooms = {};
+    // this.users = {};
     this.reservedTimeslots = new Set();
-    
+
     this.io = undefined;
   }
 
@@ -22,22 +22,22 @@ class Model {
    */
   async init(io) {
     this.io = io;
-    
+
     // Load existing timeslots from the database
     try {
-      const slots = await db.all('SELECT * FROM timeslots');
-      slots.forEach(slot => {
+      const slots = await db.all("SELECT * FROM timeslots");
+      slots.forEach((slot) => {
         this.timeslots[slot.timeslot_id] = new TimeSlot(
           slot.time,
           slot.assistant_id,
           slot.timeslot_id,
           slot.booked === 1,
-          slot.booked_by
+          slot.booked_by,
         );
       });
       console.log(`Loaded ${slots.length} timeslots from database`);
     } catch (error) {
-      console.error('Error loading timeslots:', error);
+      console.error("Error loading timeslots:", error);
     }
   }
 
@@ -46,17 +46,18 @@ class Model {
    * @param {String} name - The name of the room.
    * @returns {void}
    */
+  /*
   createRoom(name) {
     this.rooms[name] = new Room(name);
   }
-
+*/
   /**
    * Return all rooms.
    * @returns {Room[]}
    */
-  getRooms() {
+  /* getRooms() {
     return Object.values(this.rooms);
-  }
+  }*/
 
   /**
    * Return the room object with the matching name.
@@ -188,11 +189,11 @@ class Model {
    */
   reserveTimeslot(id) {
     const timeslot = this.findTimeslotById(id);
-    
+
     if (!timeslot || timeslot.isBooked() || this.isTimeslotReserved(id)) {
       return false;
     }
-    
+
     this.reservedTimeslots.add(id.toString());
     return true;
   }
@@ -218,11 +219,11 @@ class Model {
    */
   bookTimeslot(id, studentName) {
     const timeslot = this.findTimeslotById(id);
-    
+
     if (!timeslot || timeslot.isBooked()) {
       return false;
     }
-    
+
     timeslot.book(studentName);
     this.releaseTimeslot(id);
     return true;

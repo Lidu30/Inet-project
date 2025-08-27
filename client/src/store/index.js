@@ -6,9 +6,13 @@ export default createStore({
     loggedIn: false,
     username: "",
     timeSlots: [],
-    selectedTime: "",
-    selectedTimeslotId: null,
-    admin: "",
+    selectedTime: {
+      timeslot: "",
+      timeslotId: null,
+      assistant_id: "",
+    },
+    // selectedTimeslotId: null,
+    // admin: "",
     reservedSlots: new Set(),
   },
   getters: {
@@ -19,10 +23,14 @@ export default createStore({
       return state.loggedIn;
     },
 
-    availableTimeSlots(state) {
-      return state.timeSlots.filter(
-        (slot) => !slot.booked && !state.reservedSlots.has(slot.timeslot_id)
-      );
+    // availableTimeSlots(state) {
+    // return state.timeSlots.filter(
+    // (slot) => !slot.booked && !state.reservedSlots.has(String (slot.id))
+    // );
+    // },
+
+    alltimeslots(state) {
+      return state.timeSlots;
     },
 
     bookedTimeSlots(state) {
@@ -47,34 +55,37 @@ export default createStore({
     },
 
     setSelectedTime(state, { time, id, admin }) {
-      state.selectedTime = time;
-      state.selectedTimeId = id;
-      state.admin = admin;
+      state.selectedTime = {
+        timeslot: time,
+        timeslotId: id,
+        assistant_id: admin,
+      };
     },
 
-    setSelectedTimeslotId(state, id) {
-      state.selectedTimeslotId = id;
-    },
+    // setSelectedTimeslotId(state, id) {
+    // state.selectedTimeslotId = id;
+    // },
 
-    setAdmin(state, admin) {
-      state.admin = admin;
-    },
+    // setAdmin(state, admin) {
+    // state.admin = admin;
+    // },
     addTimeslot(state, timeslot) {
       state.timeSlots.push(timeslot);
     },
 
     removeTimeslot(state, timeslotId) {
       state.timeSlots = state.timeSlots.filter(
-        (slot) => slot.id !== timeslotId
+        (slot) => String(slot.id) !== String(timeslotId)
       );
     },
 
-    updateTimeslot(state, updatedTimeslot) {
+    updateTimeslot(state, bookedTimeSlot) {
       const index = state.timeSlots.findIndex(
-        (slot) => slot.timeslot_id === updatedTimeslot.timeslot_id
+        (slot) => String(slot.id) === String(bookedTimeSlot.id)
       );
       if (index !== -1) {
-        state.timeSlots.splice(index, 1, updatedTimeslot);
+        state.timeSlots[index].booked = 1;
+        state.reservedSlots.delete(bookedTimeSlot.id);
       }
     },
 
@@ -107,7 +118,6 @@ export default createStore({
         })
         .catch((error) => console.error("Logout error:", error));
     },
-    // Other actions are implemented in the components directly
   },
 
   modules: {},

@@ -2,8 +2,8 @@
   <h1>Confirm booking</h1>
 
   <div class="col">
-    <p>Chosen time slot: {{ timeslot }}</p>
-    <p>Assistant: {{ admin }}</p>
+    <p>Chosen time slot: {{ selectedTime.timeslot }}</p>
+    <p>Assistant: {{ selectedTime.assistant_id }}</p>
 
     <p v-if="msg" class="alert alert-danger">{{ msg }}</p>
     <label for="studentname" class="form-label h4"></label>
@@ -35,9 +35,11 @@ export default {
   name: "ConfirmBooking",
   data() {
     return {
-      timeslot: "", // Example hardcoded value
-      admin: "", // Example assistant
-      timeslotId: null,
+      selectedTime: {
+        timeslot: "",
+        timeslotId: null,
+        assistant_id: "",
+      },
       studentName: "",
       msg: "",
       countdown: 10,
@@ -45,13 +47,11 @@ export default {
   },
 
   created() {
-    this.timeslot = this.$store.state.selectedTime;
-    this.admin = this.$store.state.admin;
-    this.timeslotId = this.$store.state.selectedTimeslotId;
+    this.selectedTime = this.$store.state.selectedTime;
 
-    if (!this.timeslot || !this.admin || !this.timeslotId) {
-      this.$router.push("/showTimeslots");
-    }
+    // if (!this.selectedTime.time || !this.admin || !this.timeslotId) {
+    // this.$router.push("/showTimeslots");
+    // }
   },
 
   mounted() {
@@ -74,7 +74,7 @@ export default {
         return;
       }
       // Send booking request to server
-      fetch(`/api/timeslots/${this.timeslotId}/book`, {
+      fetch(`/api/timeslots/${this.selectedTime.timeslotId}/book`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default {
     },
     cancel() {
       // Send cancellation request to server
-      fetch(`/api/timeslots/${this.timeslotId}/cancel`, {
+      fetch(`/api/timeslots/${this.selectedTime.timeslotId}/cancel`, {
         method: "POST",
       })
         .then(() => {

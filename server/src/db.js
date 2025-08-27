@@ -12,7 +12,6 @@ const db = await open({
   driver: sqlite3.Database,
 });
 
-
 // Create table 'users' if it doesn't already exist
 await db.run(`
   CREATE TABLE IF NOT EXISTS users (
@@ -21,21 +20,14 @@ await db.run(`
   )
 `);
 
-
 const username = "test1";
 const password = "test1";
 const username1 = "test2";
 const password1 = "test2";
 
 try {
-  await db.run("INSERT INTO users VALUES (?, ?)", [
-    username,
-    password,
-  ]);
-  await db.run("INSERT INTO users VALUES (?, ?)", [
-    username1,
-    password1,
-  ]);
+  await db.run("INSERT INTO users VALUES (?, ?)", [username, password]);
+  await db.run("INSERT INTO users VALUES (?, ?)", [username1, password1]);
   console.log("Dummy user added successfully!");
 } catch (error) {
   console.error("Error inserting dummy user:", error.message);
@@ -64,13 +56,11 @@ try {
     assistant_id,
     time,
     booked,
-    booked_by
+    booked_by,
   ]);
   console.log("Dummy timeslot added successfully!");
 } catch (error) {
   console.error("Error inserting dummy timeslot:", error.message);
 }
-
-
 
 export default db;

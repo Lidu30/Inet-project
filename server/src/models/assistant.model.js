@@ -1,4 +1,4 @@
-class Assistant { 
+class Assistant {
   constructor(username, id) {
     this._username = username;
     this._id = id;

@@ -1,5 +1,11 @@
-class Timeslot { 
-  constructor(time, assistant_id, timeslot_id, booked = false, booked_by = null) {
+class Timeslot {
+  constructor(
+    time,
+    assistant_id,
+    timeslot_id,
+    booked = false,
+    booked_by = null,
+  ) {
     this.time = time;
     this.assistant_id = assistant_id;
     this.timeslot_id = timeslot_id;

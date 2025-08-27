@@ -23,23 +23,20 @@
 
 <script>
 export default {
-  data: () => ({
-    timeSlots: [],
-    reservedTimeslots: new Set(),
-  }),
+  data: () => ({}),
+
+  computed: {
+    timeSlots() {
+      // Use the store's getter for available time slots
+      return this.$store.getters.alltimeslots;
+    },
+    isReserved() {
+      return (id) => this.$store.state.reservedSlots.has(String(id));
+    },
+  },
 
   created() {
     this.loadTimeslots();
-  },
-
-  mounted() {
-    // Setup socket listeners for real-time updates
-    this.setupSocketListeners();
-  },
-
-  beforeUnmount() {
-    // Clean up socket listeners
-    this.cleanupSocketListeners();
   },
 
   methods: {
@@ -48,73 +45,11 @@ export default {
       fetch("/api/timeslots")
         .then((res) => res.json())
         .then((data) => {
-          this.timeSlots = data.timeslots;
+          this.$store.commit("setTimeSlots", data.timeslots);
         })
         .catch((error) => {
           console.error("Error loading timeslots:", error);
         });
-    },
-
-    setupSocketListeners() {
-      // Get socket connection from root
-      this.$socket = this.$root.socket;
-
-      if (this.$socket) {
-        // Listen for timeslot events
-        this.$socket.on("timeslot:created", this.handleTimeslotCreated);
-        this.$socket.on("timeslot:deleted", this.handleTimeslotDeleted);
-        this.$socket.on("timeslot:booked", this.handleTimeslotBooked);
-        this.$socket.on("timeslot:reserved", this.handleTimeslotReserved);
-        this.$socket.on("timeslot:released", this.handleTimeslotReleased);
-      }
-    },
-
-    cleanupSocketListeners() {
-      if (this.$socket) {
-        this.$socket.off("timeslot:created");
-        this.$socket.off("timeslot:deleted");
-        this.$socket.off("timeslot:booked");
-        this.$socket.off("timeslot:reserved");
-        this.$socket.off("timeslot:released");
-      }
-    },
-
-    // Socket event handlers
-    handleTimeslotCreated(data) {
-      this.timeSlots.push(data);
-    },
-
-    // If the assistant deletes the time
-    handleTimeslotDeleted(data) {
-      this.timeSlots = this.timeSlots.filter((slot) => slot.id !== data.id);
-      if (this.reservedTimeslots.has(data.id)) {
-        this.reservedTimeslots.delete(data.id);
-      }
-    },
-
-    handleTimeslotBooked(data) {
-      const slotFound = this.timeSlots.find((slot) => slot.id === data.id);
-      if (slotFound) {
-        slotFound.booked = true;
-        slotFound.bookedBy = data.studentName;
-      }
-      if (this.reservedTimeslots.has(data.id)) {
-        this.reservedTimeslots.delete(data.id);
-      }
-    },
-
-    handleTimeslotReserved(data) {
-      this.reservedTimeslots.add(data.id);
-    },
-
-    handleTimeslotReleased(data) {
-      if (this.reservedTimeslots.has(data.id)) {
-        this.reservedTimeslots.delete(data.id);
-      }
-    },
-
-    isReserved(id) {
-      return this.reservedTimeslots.has(id);
     },
 
     selectTime(timeslot) {
@@ -140,8 +75,8 @@ export default {
             id: timeslot.id,
             admin: timeslot.assistantId,
           });
-          this.$store.commit("setAdmin", timeslot.assistantId);
-          this.$store.commit("setSelectedTimeslotId", timeslot.id);
+          // this.$store.commit("setAdmin", timeslot.assistantId);
+          // this.$store.commit("setSelectedTimeslotId", timeslot.id);
 
           // Navigate to booking page
           this.$router.push("/booking");
