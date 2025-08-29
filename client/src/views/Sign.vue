@@ -25,7 +25,7 @@
         <input
             v-model = "role"
             type = "radio"
-            value = "Student"
+            value = "student"
         /> 
         Student
       </label> 
@@ -34,7 +34,7 @@
         <input
             v-model = "role"
             type = "radio"
-            value = "Assistant"
+            value = "assistant"
         /> 
         Assistant
       </label> 
@@ -48,7 +48,7 @@
 
 <script>
 export default {
-  name: "LoginView",
+  name: "signinView",
   components: {},
   data: () => ({
     username: "",
@@ -76,7 +76,7 @@ export default {
           .then((data) => {
             if (data.signupSuccess) {
               this.msg = "sign up successful, please Log in to continue forward"
-              this.$router.push("/Login");
+              this.$router.push("/login");
             } else {
               this.msg = "Sign up failed please try again"
             }
