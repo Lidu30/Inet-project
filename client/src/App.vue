@@ -11,6 +11,9 @@
     <div id="navbarNav" class="collapse navbar-collapse mx-2">
       <ul class="navbar-nav">
         <li class="nav-item">
+          <a class="nav-link" href="#" @click="redirect('/signup')">Sign up</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="#" @click="redirect('/login')">Login</a>
         </li>
         <li class="nav-item">
