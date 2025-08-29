@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col"></div>
-    <form class="col" @submit.prevent="checkLogin()">
+    //<form class="col"  @submit.prevent="signup()">
       <label for="username" class="form-label h4">Welcome</label>
       <p></p>
       <input
@@ -57,14 +57,9 @@ export default {
     role:"",
   }),
 
-  created() {
-    // Check if already authenticated
-    this.checkAuthStatus();
-  },
-
   methods: {
 
-    Signup() {
+    signup() {
       if (this.username.length >= 3 && this.password.length >= 3) {
         fetch("/api/signup", {
           method: "POST",
